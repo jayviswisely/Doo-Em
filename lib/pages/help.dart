@@ -6,7 +6,7 @@ class HelpPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.green[200],
+      backgroundColor: Colors.green[100],
       appBar: AppBar(
         toolbarHeight: 100,
         leading: IconButton(
@@ -23,88 +23,64 @@ class HelpPage extends StatelessWidget {
           },
         ),
       ),
-      body: Container(
-        child: Column(
-          children: [
-            SizedBox(height: 80.0),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                "Press the floating button to add a new task",
-                style: TextStyle(
-                  fontSize: 20,
-                  color: Colors.black87,
-                  fontWeight: FontWeight.bold,
+      body: Center(
+        child: Container(
+          child: Column(
+            children: [
+              SizedBox(height: 80.0),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  "Press + button to add a new task",
+                  style: TextStyle(
+                    fontSize: 20,
+                    color: Colors.black54,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                "Swipe Task to left to delete a task",
-                style: TextStyle(
-                  fontSize: 20,
-                  color: Colors.black87,
-                  fontWeight: FontWeight.bold,
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  "Swipe Task to left to delete a task",
+                  style: TextStyle(
+                    fontSize: 20,
+                    color: Colors.black54,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                "Swipe Task to right to edit a task",
-                style: TextStyle(
-                  fontSize: 20,
-                  color: Colors.black87,
-                  fontWeight: FontWeight.bold,
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  "Swipe Task to right to edit a task",
+                  style: TextStyle(
+                    fontSize: 20,
+                    color: Colors.black54,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                "Tell me bugs that you found",
-                style: TextStyle(
-                  fontSize: 20,
-                  color: Colors.black87,
-                  fontWeight: FontWeight.bold,
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  "(This page has yet to be designed)",
+                  style: TextStyle(
+                    fontSize: 20,
+                    color: Colors.black54,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                "ik app ugly, bcs i prioritize functionality first then app UI",
-                style: TextStyle(
-                  fontSize: 20,
-                  color: Colors.black87,
-                  fontWeight: FontWeight.bold,
-                ),
+              SizedBox(
+                height: 20,
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                "give feedbacks too on what I should add, thanks",
-                style: TextStyle(
-                  fontSize: 20,
-                  color: Colors.black87,
-                  fontWeight: FontWeight.bold,
-                ),
+              Image.asset(
+                'assets/emptytask.png', // Replace with your own image path
+                width: 320,
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                "IDK why i cant uncenter some of those but who cares ill rework this ltr",
-                style: TextStyle(
-                  fontSize: 20,
-                  color: Colors.black87,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

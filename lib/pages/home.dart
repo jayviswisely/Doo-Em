@@ -41,13 +41,20 @@ class _HomePageState extends State<HomePage> {
   }
 
   // save new task
-  void saveNewTask() {
-    setState(() {
-      db.toDoList.add([_controller.text, false]);
-      _controller.clear();
-    });
-    Navigator.of(context).pop();
-    db.updateDataBase();
+  void saveNewTask(int selectedPriority) {
+    String taskText = _controller.text.trim();
+
+    if (taskText.isNotEmpty && taskText.length <= 100) {
+      setState(() {
+        db.toDoList.add([taskText, false, selectedPriority]);
+        _controller.clear();
+      });
+      Navigator.of(context).pop();
+      db.updateDataBase();
+    } else {
+      // Display an error message or perform any desired action
+      // to handle invalid input.
+    }
   }
 
   // create a new task
@@ -55,13 +62,18 @@ class _HomePageState extends State<HomePage> {
     showDialog(
       context: context,
       builder: (context) {
+        int selectedPriority = 1; // Default priority value
         return DialogBox(
           controller: _controller,
-          onSave: saveNewTask,
+          onSave: () => saveNewTask(selectedPriority),
           onCancel: () => Navigator.of(context).pop(),
-          hintText: "e.g. Follow @jayviswiselyy",
+          hintText: "e.g. follow @jayviswiselyy",
           initValue: "",
           title: "Create a New Task",
+          onPriorityChanged: (priority) {
+            selectedPriority = priority;
+          },
+          selectedPriority: 1,
         );
       },
     );
@@ -81,13 +93,18 @@ class _HomePageState extends State<HomePage> {
       showDialog(
         context: context,
         builder: (context) {
+          int selectedPriority = db.toDoList[index][2];
           return DialogBox(
             controller: _controller,
-            onSave: () => renewTask(index),
+            onSave: () => renewTask(index, selectedPriority),
             onCancel: () => Navigator.of(context).pop(),
-            hintText: "",
+            hintText: "e.g. follow @jayviswiselyy",
             initValue: db.toDoList[index][0],
             title: "Edit an Existing Task",
+            onPriorityChanged: (priority) {
+              selectedPriority = priority;
+            },
+            selectedPriority: db.toDoList[index][2],
           );
         },
       );
@@ -95,9 +112,10 @@ class _HomePageState extends State<HomePage> {
   }
 
   //renew edited task
-  void renewTask(int index) {
+  void renewTask(int index, selectedPriority) {
     setState(() {
       db.toDoList[index][0] = _controller.text;
+      db.toDoList[index][2] = selectedPriority;
       _controller.clear();
     });
     Navigator.of(context).pop();
@@ -107,14 +125,14 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.green[200],
+      backgroundColor: Colors.green[100],
       appBar: AppBar(
         toolbarHeight: 100,
-        title: Padding(
-          padding: const EdgeInsets.only(left: 10.0),
-          child: Text('My TO-DO List'),
+        title: const Padding(
+          padding: EdgeInsets.only(left: 10.0),
+          child: Text("Doo'Em!"),
         ),
-        titleTextStyle: TextStyle(
+        titleTextStyle: const TextStyle(
             color: Colors.black54, fontWeight: FontWeight.w600, fontSize: 20.0),
         actions: [
           Padding(
@@ -137,24 +155,105 @@ class _HomePageState extends State<HomePage> {
         height: 70,
         child: FloatingActionButton(
           onPressed: createNewTask,
-          child: Icon(
+          child: const Icon(
             Icons.add,
             size: 30,
             color: Colors.black54,
           ),
         ),
       ),
-      body: ListView.builder(
-        itemCount: db.toDoList.length,
-        itemBuilder: (context, index) {
-          return ToDoItem(
-            taskName: db.toDoList[index][0],
-            taskCompleted: db.toDoList[index][1],
-            onChanged: (value) => checkBoxChanged(value, index),
-            deleteFunction: (context) => deleteTask(index),
-            editFunction: (context) => editTask(index),
-          );
-        },
+      body: Column(
+        children: [
+          if (db.toDoList.isEmpty)
+            Expanded(
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image.asset(
+                      'assets/emptytask.png',
+                      width: 320,
+                    ),
+                    const Text(
+                      "Start creating your first task!",
+                      style: TextStyle(fontSize: 18),
+                    ),
+                  ],
+                ),
+              ),
+            )
+          else
+            Expanded(
+              child: ListView.builder(
+                itemCount: db.toDoList.length + 1, // Add 1 for the empty box
+                itemBuilder: (context, index) {
+                  if (index == db.toDoList.length) {
+                    // Render empty box
+                    return SizedBox(
+                      height: 30,
+                    );
+                  } else {
+                    // Sort the list based on priority
+                    db.toDoList.sort((a, b) => b[2].compareTo(a[2]));
+
+                    // Check if a new priority group is starting
+                    if (index == 0 ||
+                        db.toDoList[index][2] != db.toDoList[index - 1][2]) {
+                      // Render priority group title
+                      String priorityTitle = '';
+
+                      // Check priority value and set the title accordingly
+                      if (db.toDoList[index][2] == 3) {
+                        priorityTitle = 'High Priority';
+                      } else if (db.toDoList[index][2] == 2) {
+                        priorityTitle = 'Medium Priority';
+                      } else if (db.toDoList[index][2] == 1) {
+                        priorityTitle = 'Low Priority';
+                      }
+
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Container(
+                              padding: EdgeInsets.only(top: 20),
+                              child: Text(
+                                priorityTitle,
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black54,
+                                ),
+                              ),
+                            ),
+                          ),
+                          ToDoItem(
+                            taskName: db.toDoList[index][0],
+                            taskCompleted: db.toDoList[index][1],
+                            taskPriority: db.toDoList[index][2],
+                            onChanged: (value) => checkBoxChanged(value, index),
+                            deleteFunction: (context) => deleteTask(index),
+                            editFunction: (context) => editTask(index),
+                          ),
+                        ],
+                      );
+                    } else {
+                      // Render regular item
+                      return ToDoItem(
+                        taskName: db.toDoList[index][0],
+                        taskCompleted: db.toDoList[index][1],
+                        taskPriority: db.toDoList[index][2],
+                        onChanged: (value) => checkBoxChanged(value, index),
+                        deleteFunction: (context) => deleteTask(index),
+                        editFunction: (context) => editTask(index),
+                      );
+                    }
+                  }
+                },
+              ),
+            ),
+        ],
       ),
     );
   }
