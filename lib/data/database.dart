@@ -11,7 +11,7 @@ class ToDoDataBase {
     toDoList = [
       ["Follow @jayviswiselyy on Instagram", false, 3],
       ["Create a new task!", false, 2],
-      ["Try swiping me left or right!", false, 1],
+      ["Try swiping me left or right!", false, 1],2
     ];
   }
 
